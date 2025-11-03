@@ -1,4 +1,4 @@
-# 🎨 fishyanimateskoolstuff
+#fishyanimateskoolstuff
 
 Just messing around with animations using GSAP.  
 random little fun experiments — all for practice.
