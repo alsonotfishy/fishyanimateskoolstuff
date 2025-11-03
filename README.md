@@ -2,6 +2,7 @@
 
 Just messing around with animations using GSAP.  
 random little fun experiments — all for practice.
+Feel free to use anything u want
 
 ---
 
