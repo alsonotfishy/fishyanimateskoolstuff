@@ -400,3 +400,378 @@ nav i {
 }
 
 
+
+/* ============================================================
+   RETRO ARCADE SLOT MACHINE  (monotone: black / white only)
+   ============================================================ */
+
+#slots {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8vh 1rem;
+  background: #000;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* CRT scanlines */
+#slots .slot-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.055) 0px,
+    rgba(255, 255, 255, 0.055) 1px,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0) 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* CRT corner darkening */
+#slots .slot-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+
+/* ---------- cabinet shell ---------- */
+
+#slots .cabinet {
+  position: relative;
+  z-index: 2;
+  width: min(760px, 94vw);
+  padding: clamp(1rem, 2.5vw, 2rem);
+  border: 3px solid #fff;
+  border-radius: 6px;
+  background: #050505;
+  box-shadow:
+    0 0 0 8px #000,
+    0 0 0 10px rgba(255, 255, 255, 0.28),
+    0 0 60px rgba(255, 255, 255, 0.12),
+    inset 0 0 40px rgba(255, 255, 255, 0.05);
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  color: #fff;
+}
+
+/* ---------- marquee header ---------- */
+
+#slots .marquee {
+  position: relative;
+  text-align: center;
+  padding: clamp(0.9rem, 2vw, 1.4rem) 0.75rem 1rem;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 6px,
+      rgba(0, 0, 0, 0) 6px,
+      rgba(0, 0, 0, 0) 12px
+    ),
+    #0b0b0b;
+}
+
+#slots .marquee-bulbs {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-image: radial-gradient(circle, #fff 0 1.6px, rgba(0, 0, 0, 0) 1.9px);
+  background-size: 16px 4px;
+  background-repeat: repeat-x;
+  animation: bulbChase 0.9s steps(2) infinite;
+}
+
+@keyframes bulbChase {
+  0%   { background-position: 0 0;   opacity: 1; }
+  50%  { background-position: 8px 0; opacity: 0.45; }
+  100% { background-position: 0 0;   opacity: 1; }
+}
+
+#slots .marquee h2 {
+  font-size: clamp(0.7rem, 2.2vw, 1.35rem);
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  color: #fff;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.55),
+    2px 0 0 rgba(255, 255, 255, 0.25),
+    -2px 0 0 rgba(255, 255, 255, 0.25);
+}
+
+#slots .marquee-sub {
+  margin-top: 0.85rem;
+  font-size: clamp(0.4rem, 1.15vw, 0.6rem);
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.62);
+  animation: insertCoin 1.4s steps(2) infinite;
+}
+
+@keyframes insertCoin {
+  0%, 60%  { opacity: 1; }
+  61%, 100% { opacity: 0.12; }
+}
+
+/* ---------- reel deck ---------- */
+
+#slots .reel-deck {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(0.6rem, 1.6vw, 1.2rem);
+  margin: clamp(1rem, 2.2vw, 1.6rem) 0;
+}
+
+#slots .reel-window {
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: 16 / 7;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #000;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 26px rgba(0, 0, 0, 0.95),
+    0 0 18px rgba(255, 255, 255, 0.1);
+}
+
+#slots #slot-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* fades the top/bottom of the drums so only the payline row reads clearly */
+#slots .reel-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    #000 0%,
+    rgba(0, 0, 0, 0.82) 16%,
+    rgba(0, 0, 0, 0) 38%,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(0, 0, 0, 0.82) 84%,
+    #000 100%
+  );
+}
+
+#slots .payline {
+  position: absolute;
+  top: 50%;
+  left: 4%;
+  right: 4%;
+  height: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  border-top: 1px dashed rgba(255, 255, 255, 0.35);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.35);
+  box-sizing: content-box;
+  padding: clamp(18px, 4.4vw, 40px) 0;
+}
+
+/* ---------- lever ---------- */
+
+#slots .lever {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(38px, 6vw, 58px);
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #0b0b0b;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease;
+}
+
+#slots .lever:hover { background: #151515; }
+
+#slots .lever:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+#slots .lever-stick {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 5px;
+  height: 46%;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  background: #fff;
+}
+
+#slots .lever-knob {
+  position: absolute;
+  left: 50%;
+  bottom: calc(22% + 46%);
+  width: clamp(16px, 2.4vw, 22px);
+  aspect-ratio: 1;
+  transform: translate(-50%, 45%);
+  transform-origin: center bottom;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 38%, #8a8a8a 60%, #1a1a1a 100%);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+}
+
+#slots .lever-base {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  width: 70%;
+  height: 10%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* ---------- readout ---------- */
+
+#slots .readout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  padding: clamp(0.7rem, 1.6vw, 1rem);
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #0b0b0b;
+}
+
+#slots .readout-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+#slots .readout-label {
+  font-size: clamp(0.4rem, 1.1vw, 0.58rem);
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+#slots .readout-value {
+  font-size: clamp(1.1rem, 3.4vw, 2rem);
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+#slots .readout-status {
+  font-size: clamp(0.45rem, 1.25vw, 0.68rem);
+  letter-spacing: 0.18em;
+  color: #fff;
+}
+
+#slots .readout-status.blink {
+  animation: insertCoin 0.5s steps(2) infinite;
+}
+
+/* ---------- footer controls ---------- */
+
+#slots .cabinet-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: clamp(0.8rem, 1.8vw, 1.2rem);
+}
+
+#slots .credit {
+  font-size: clamp(0.38rem, 1vw, 0.55rem);
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+#slots .spin-btn {
+  font-family: inherit;
+  font-size: clamp(0.5rem, 1.4vw, 0.75rem);
+  letter-spacing: 0.2em;
+  padding: 0.85em 1.8em;
+  color: #000;
+  background: #fff;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.12s ease, box-shadow 0.25s ease, color 0.2s ease, background 0.2s ease;
+}
+
+#slots .spin-btn:hover {
+  background: #000;
+  color: #fff;
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.5);
+}
+
+#slots .spin-btn:active { transform: translateY(2px); }
+
+#slots .spin-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+#slots .spin-btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* On narrow screens the reel window keeps its wide ratio (the drums fit it
+   best at ~2.3:1) and the lever drops below it as a control panel. */
+@media (max-width: 560px) {
+  #slots .reel-deck { flex-direction: column; }
+
+  #slots .lever {
+    width: 100%;
+    height: 58px;
+  }
+
+  #slots .lever-stick {
+    bottom: 20%;
+    height: 48%;
+  }
+
+  #slots .lever-knob {
+    bottom: 68%;
+    width: 18px;
+  }
+
+  #slots .lever-base {
+    width: 34%;
+    height: 9%;
+    bottom: 10%;
+  }
+}
+
+@media (max-width: 480px) {
+  #slots { padding: 6vh 0.75rem; }
+
+  #slots .cabinet-footer { flex-direction: column; }
+
+  #slots .credit { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #slots .marquee-bulbs,
+  #slots .marquee-sub,
+  #slots .readout-status.blink {
+    animation: none;
+  }
+}
